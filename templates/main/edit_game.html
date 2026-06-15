@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Edit Game
+{% endblock title %}
+
+
+{% block content %}
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom shadow-sm py-3">
+    <div class="container">
+        <a href="{% url 'main:home' %}"><span class="text-light fw-medium">
+                Welcome, <span class="text-info fw-bold">{{ request.session.user_name }}</span>
+            </span></a>
+
+        <div class="d-flex align-items-center gap-3">
+
+
+            <a href="{% url 'accounts:logout' %}" class="btn btn-outline-danger btn-sm px-3 rounded-pill fw-semibold">
+                Log Out
+            </a>
+        </div>
+    </div>
+</nav>
+
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="card p-5 border-0 shadow-sm rounded-4 bg-white text-center">
+                <div class="card-body">
+                    <h1 class="fw-bold text-secondary mb-3">Edit Game</h1>
+                    <form method="post" action="{% url 'main:edit_game' game.id %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Game Name</label>
+                            <input type="text" class="form-control" id="name" name="name" value="{{ game.name }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="genre" class="form-label">Genre</label>
+                            <input type="text" class="form-control" id="genre" name="genre" value="{{ game.genre }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="release_date" class="form-label">Release Date</label>
+                            <input type="date" class="form-control" id="release_date" name="release_date" value="{{ game.release_date }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="3" required>{{ game.description }}</textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-semibold">Save Changes</button>
+                        <a href="{% url 'main:game_detail' game.id %}" class="btn btn-secondary btn-lg rounded-pill fw-semibold ms-3">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

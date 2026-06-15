@@ -11,7 +11,7 @@ def get_success_url():
 def index(request):
     if 'user_id' in request.session:
         return redirect(get_success_url())
-    return render(request, "accounts/landing.html")
+    return render(request, "accounts/registration.html")
 
 
 def register(request):
@@ -21,7 +21,7 @@ def register(request):
         if len(errors) > 0:
             for key, value in errors.items():
                 messages.error(request, value, extra_tags=key)
-            return render(request, "accounts/register.html") 
+            return render(request, "accounts/registration.html") 
             
         raw_password = request.POST['password']
         hashed_password = bcrypt.hashpw(raw_password.encode(), bcrypt.gensalt()).decode()
@@ -31,14 +31,15 @@ def register(request):
             last_name=request.POST['last_name'].strip(),
             email=request.POST['email'].strip(),
             birthday=request.POST['birthday'],
-            password=hashed_password
+            password=hashed_password,
+            img=request.FILES.get('image')
         )
         
         request.session['user_id'] = new_user.id
         request.session['user_name'] = f"{new_user.first_name} {new_user.last_name}"
         return redirect(get_success_url())
         
-    return render(request, "accounts/register.html")
+    return render(request, "accounts/registration.html")
 
 
 def login(request):
@@ -53,9 +54,9 @@ def login(request):
                 return redirect(get_success_url())
                 
         messages.error(request, "Invalid email or password combination.", extra_tags="login")
-        return render(request, "accounts/login.html")
+        return render(request, "accounts/registration.html")
         
-    return render(request, "accounts/login.html")
+    return render(request, "accounts/registration.html")
 
 
 def logout(request):

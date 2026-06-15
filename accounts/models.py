@@ -30,14 +30,18 @@ class UserManager(models.Manager):
             errors['email'] = "This email is already registered."
 
         # Birthday Validation
-        birthday_str = postData.get('birthday', '').strip()
-        if birthday_str:
-            try:
-                birthday = datetime.strptime(birthday_str, '%Y-%m-%d').date()
-                if birthday >= date.today():
-                    errors['birthday'] = "Birthday must be a date in the past."
-            except ValueError:
-                errors['birthday'] = "Invalid date format for birthday. Use YYYY-MM-DD."
+        # user should be at least 18 years old and birthday should be in the past
+        birthday_str = postData.get('birthday', '')
+        try:
+            birthday = datetime.strptime(birthday_str, '%Y-%m-%d').date()
+            today = date.today()
+            age = today.year - birthday.year - ((today.month, today.day) < (birthday.month, birthday.day))
+            if age < 18:
+                errors['birthday'] = "You must be at least 18 years old to register."
+            elif birthday > today:
+                errors['birthday'] = "Birthday cannot be in the future."
+        except ValueError:
+            errors['birthday'] = "Invalid birthday format. Please use YYYY-MM-DD."
 
         # Password Validation
         password = postData.get('password', '')
@@ -54,6 +58,7 @@ class User(models.Model):
     email = models.CharField(max_length=255, unique=True)
     birthday = models.DateField(null=True, blank=True)
     password = models.CharField(max_length=255) 
+    img = models.ImageField(upload_to='profile_images/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

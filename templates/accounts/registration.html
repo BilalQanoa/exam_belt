@@ -1,27 +1,21 @@
 {% extends "base.html" %}
 
 {% block title %}
-Create Your HubCraft Account
+Login Registrations
 {% endblock title %}
 
 {% block content %}
-<div class="container d-flex flex-column align-content-center justify-content-center align-items-center"
-    style="min-height: 95vh py-4;">
-    <div class="row w-100 justify-content-center">
-        <div class="col-12 col-sm-10 col-md-8 col-lg-6">
 
-            <div class="text-start mb-3">
-                <a href="{% url 'accounts:index' %}" class="text-decoration-none text-muted small fw-semibold">
-                    ← Back to Home
-                </a>
-            </div>
-
-            <div class="card p-4 border-0 shadow-sm rounded-4 bg-white">
+<div class="container mt-5">
+    <div class="row g-4">
+        <!-- Registration Form -->
+        <div class="col-md-6">
+            <div class="card card-custom h-100">
                 <div class="card-body">
                     <h2 class="fw-bold text-secondary mb-1">Create Account</h2>
                     <p class="text-muted small mb-4">Get started by creating your new account today.</p>
 
-                    <form action="{% url 'accounts:register' %}" method="POST">
+                    <form action="{% url 'accounts:register' %}" method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
 
                         <div class="row">
@@ -72,6 +66,16 @@ Create Your HubCraft Account
                             {% endfor %}
                         </div>
 
+                        <div class="mb-3">
+                            <label for="img" class="form-label small fw-semibold text-secondary">Profile Image</label>
+                            <input type="file" name="img" id="img" class="form-control rounded-3 py-2">
+                            {% for message in messages %}
+                            {% if 'img' in message.extra_tags %}
+                            <small class="text-danger d-block mt-1">{{ message }}</small>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                        
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="password"
@@ -87,7 +91,8 @@ Create Your HubCraft Account
 
                             <div class="col-md-6 mb-4">
                                 <label for="confirm_password"
-                                    class="form-label small fw-semibold text-secondary">Confirm Password</label>
+                                    class="form-label small fw-semibold text-secondary">Confirm
+                                    Password</label>
                                 <input type="password" name="confirm_password" id="confirm_password"
                                     class="form-control rounded-3 py-2" placeholder="••••••••" required>
                             </div>
@@ -98,18 +103,51 @@ Create Your HubCraft Account
                         </button>
                     </form>
 
-                    <div class="text-center mt-2">
-                        <span class="text-muted small">Already have an account? </span>
-                        <a href="{% url 'accounts:login' %}"
-                            class="text-decoration-none small fw-semibold text-primary">
-                            Sign in
-                        </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login Form -->
+        <div class="col-md-6">
+            <div class="card card-custom h-100">
+                <div class="card-body">
+                    <h2 class="fw-bold text-secondary mb-1">Sign In</h2>
+                    <p class="text-muted small mb-4">Welcome back! Please enter your details.</p>
+
+                    {% if messages %}
+                    {% for message in messages %}
+                    {% if 'login' in message.extra_tags %}
+                    <div class="alert alert-danger py-2 small border-0 rounded-3 mb-3" role="alert">
+                        {{ message }}
                     </div>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+
+                    <form action="{% url 'accounts:login' %}" method="POST">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label small fw-semibold text-secondary">Email Address</label>
+                            <input type="email" name="email" id="email" class="form-control rounded-3 py-2"
+                                placeholder="name@example.com" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="password" class="form-label small fw-semibold text-secondary">Password</label>
+                            <input type="password" name="password" id="password" class="form-control rounded-3 py-2"
+                                placeholder="••••••••" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 py-2 rounded-3 fw-bold shadow-sm mb-3">
+                            Sign In
+                        </button>
+                    </form>
 
                 </div>
             </div>
-
         </div>
     </div>
 </div>
+
 {% endblock content %}
